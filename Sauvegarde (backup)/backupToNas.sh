@@ -45,7 +45,7 @@ shw_OK ()   { echo -en "${bold}${vert}OK!${@}${reset}";		}
 shw_warn () { echo -en "${bold}${violet}${@}${reset}";		}
 shw_err ()  { echo -en "${bold}${rouge}${@}${reset}";		}
 gris() 	    { echo -en "${bold}${gris}${@}${reset}";		}
-header()    { echo -e "${bold}${jaune}$*${reset}";				}
+header()    { echo -e "${bold}${jaune}$*${reset}";		}
 headerU()   { echo -e "${underline}${bold}${jaune}$*${reset}";  }
 
 # debut du script
@@ -88,20 +88,20 @@ cd $PARTAGEMNT || (shw_err "\n\t ERREUR: cd impossible"; exit 1)
 shw_norm "\n\t::: creation de l'archive ${TAR}... "
 # une ligne par fichier ou dossier à sauvegarder, sans oublier les exclusions
 tar zcf "$TAR" \
-	/etc/cron.daily 				\
-	/etc/cron.hourly 				\
-	/etc/cron.monthly 				\
-	/etc/init.d					\
-	/etc/network/interfaces 			\
-	/etc/modules					\
-	/etc/modprobe.d/				\
-	/etc/udev					\
-	/etc/wpa_supplicant				\
-	/var/www 					\
-	/home/pi 					\
-	/tmp/crontab  					\
-	/root/*.sh*						\
-	/root/.bash*				\
+	/etc/cron.daily 		\
+	/etc/cron.hourly 		\
+	/etc/cron.monthly 		\
+	/etc/init.d			\
+	/etc/network/interfaces 	\
+	/etc/modules			\
+	/etc/modprobe.d/		\
+	/etc/udev			\
+	/etc/wpa_supplicant		\
+	/var/www 			\
+	/home/pi 			\
+	/tmp/crontab  			\
+	/root/*.sh*			\
+	/root/.bash*			\
 	--exclude '/home/pi/Desktop'	\
 	--exclude '/home/pi/motion'	\
 	--exclude '/home/pi/photos'	\
