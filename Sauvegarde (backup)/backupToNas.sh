@@ -40,11 +40,11 @@ gris=$(		tput setaf 7)
 
 # Fonctions
 shw_norm () { echo -en "${bold}$(tput setaf 9)${@}${reset}";	}
-shw_info () { echo -en "${bold}${cyan}${@}${reset}";			}
-shw_OK ()   { echo -en "${bold}${vert}OK!${@}${reset}";			}
-shw_warn () { echo -en "${bold}${violet}${@}${reset}";			}
-shw_err ()  { echo -en "${bold}${rouge}${@}${reset}";			}
-gris() 	    { echo -en "${bold}${gris}${@}${reset}";			}
+shw_info () { echo -en "${bold}${cyan}${@}${reset}";		}
+shw_OK ()   { echo -en "${bold}${vert}OK!${@}${reset}";		}
+shw_warn () { echo -en "${bold}${violet}${@}${reset}";		}
+shw_err ()  { echo -en "${bold}${rouge}${@}${reset}";		}
+gris() 	    { echo -en "${bold}${gris}${@}${reset}";		}
 header()    { echo -e "${bold}${jaune}$*${reset}";				}
 headerU()   { echo -e "${underline}${bold}${jaune}$*${reset}";  }
 
@@ -91,22 +91,22 @@ tar zcf "$TAR" \
 	/etc/cron.daily 				\
 	/etc/cron.hourly 				\
 	/etc/cron.monthly 				\
-	/etc/init.d						\
-	/etc/network/interfaces 		\
+	/etc/init.d					\
+	/etc/network/interfaces 			\
 	/etc/modules					\
 	/etc/modprobe.d/				\
-	/etc/udev						\
+	/etc/udev					\
 	/etc/wpa_supplicant				\
-	/var/www 						\
-	/home/pi 						\
+	/var/www 					\
+	/home/pi 					\
 	/tmp/crontab  					\
 	/root/*.sh*						\
-	/root/.bash*					\
+	/root/.bash*				\
 	--exclude '/home/pi/Desktop'	\
-	--exclude '/home/pi/motion'		\
-	--exclude '/home/pi/photos'		\
+	--exclude '/home/pi/motion'	\
+	--exclude '/home/pi/photos'	\
 	--exclude '/home/pi/homebridge'	\
-    --exclude '/home/pi/.node-*'	\
+	--exclude '/home/pi/.node-*'	\
 	> /dev/null 2>&1
 
 tarsize=$(du -sh "$TAR")
