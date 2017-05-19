@@ -3,7 +3,6 @@
 # Backup a Raspberry Pi to CIFS share
 ###########################################
 # auteur : Mr Xhark (blogmotion.fr)
-# source : http://blogmotion.fr
 VERSION="2017.05.15"
 # licence type	: Creative Commons Attribution-NoDerivatives 4.0 (International)
 # licence info	: http://creativecommons.org/licenses/by-nd/4.0/
