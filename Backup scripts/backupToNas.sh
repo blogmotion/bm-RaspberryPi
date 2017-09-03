@@ -4,7 +4,7 @@
 ###########################################
 # auteur : Mr Xhark (blogmotion.fr)
 # source : http://blogmotion.fr/systeme/script-backup-rpi-partage-15977
-VERSION="2017.05.15"
+VERSION="2017.09.04"
 # licence type	: Creative Commons Attribution-NoDerivatives 4.0 (International)
 # licence info	: http://creativecommons.org/licenses/by-nd/4.0/
 ###########################################
@@ -88,20 +88,24 @@ cd $PARTAGEMNT || (shw_err "\n\t ERREUR: cd impossible"; exit 1)
 shw_norm "\n\t::: creation de l'archive ${TAR}... "
 # une ligne par fichier ou dossier à sauvegarder, sans oublier les exclusions
 tar zcf "$TAR" \
+	/boot/*.txt			\
 	/etc/cron.daily 		\
 	/etc/cron.hourly 		\
 	/etc/cron.monthly 		\
+	/etc/fstab			\
 	/etc/init.d			\
 	/etc/network/interfaces 	\
 	/etc/modules			\
 	/etc/modprobe.d/		\
+	/etc/ssh/sshd_config		\
 	/etc/udev			\
 	/etc/wpa_supplicant		\
-	/var/www 			\
 	/home/pi 			\
-	/tmp/crontab  			\
 	/root/*.sh*			\
 	/root/.bash*			\
+	/root/bash_xhark		\
+	/var/www 			\
+	/tmp/crontab  			\
 	--exclude '/home/pi/Desktop'	\
 	--exclude '/home/pi/motion'	\
 	--exclude '/home/pi/photos'	\
