@@ -32,5 +32,5 @@ ${green}
      ~ .~ (   ) ~. ~  Processus en exec....: `ps ax | wc -l | tr -d " "`
       (  : '~' :  )   Adresses IP..........: `/sbin/ifconfig | /bin/grep "Bcast:" | /usr/bin/cut -d ":" -f 2 | /usr/bin/cut -d " " -f 1`
        '~ .~~~. ~'    Temperature salon....: `cat /sys/bus/w1/devices/28-*/w1_slave | grep "t=" | awk -F "t=" '{printf("%.1f\n", $2/1000)}'`'C
-           '~'        Temperature balcon...: `curl -s "http://localhost:8080/json.htm?type=devices&rid=760" | jq -r .result[]."Data" | sed "s/ C/\'C/g" `
+           '~'        Temperature balcon...: `curl --ipv4 -s "http://localhost:8080/json.htm?type=devices&rid=760" | jq -r .result[]."Data" | sed "s/ C/\'C/g" `
     $(tput sgr0)"
