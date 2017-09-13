@@ -111,6 +111,7 @@ tar zcf "$TAR" \
 	--exclude '/home/pi/photos'	\
 	--exclude '/home/pi/homebridge'	\
 	--exclude '/home/pi/.node-*'	\
+	--exclude '/home/pi/domoticz/backups/daily' \
 	> /dev/null 2>&1
 
 tarsize=$(du -sh "$TAR")
