@@ -80,7 +80,7 @@ else
 fi
 
 # Sauvegarde listing cron
-/usr/bin/crontab -l > /tmp/crontab
+for user in $(cut -f1 -d: /etc/passwd); do echo -e "\n\n==> $user:" ; crontab -u $user -l ;  done > /tmp/crontab 2>&1
 
 cd $PARTAGEMNT || (shw_err "\n\t ERREUR: cd impossible"; exit 1)
 
