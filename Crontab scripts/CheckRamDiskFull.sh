@@ -25,7 +25,7 @@ do
     
 	# email notification with telnet and tty notification
 	/root/RamDiskEmailNotif.sh
-    echo "REBOOT DANS 60 SECONDES PURGE RAMDISK" | wall && sleep 5 && reboot
+	echo "REBOOT DANS 60 SECONDES PURGE RAMDISK" | wall && sleep 5 && reboot
 	
 	# email notification with mail
 	#echo "LE RAMDISK EST PLEIN  \"$partition ($usep%)\" sur $(hostname) au $(date)" | mail -s "Alert: Almost out of disk space $usep%" you@somewhere.com
