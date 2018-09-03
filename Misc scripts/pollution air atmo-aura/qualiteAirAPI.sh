@@ -8,6 +8,8 @@ APIKEY="xxxxxxxxxxxxxxxxxxxxxx"	# Votre cle API Atmo-Aura
 INSEEC="38185"					# Code INSEE commune 38185=Grenoble - https://bit.ly/codeinsee
 
 ### NE RIEN TOUCHER SOUS CETTE LIGNE #####################################################################
+which jq 2>&1 >/dev/null || (echo "ERREUR: jq absent, essayez: sudo apt install jq"; exit 1)
+
 URLINDICE="https://api.atmo-aura.fr/communes/${INSEEC}/indices?date=now&api_token=${APIKEY}"
 JSON=$(curl -L -s --connect-timeout 5 $URLINDICE) || CURL_RETURN_CODE=$?
 
