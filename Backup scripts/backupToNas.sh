@@ -9,6 +9,11 @@ VERSION="2017.09.04"
 # licence info	: http://creativecommons.org/licenses/by-nd/4.0/
 ###########################################
 
+# Si erreur "mount error(95): Operation not supported Refer to the mount.cifs(8) manual page (e.g. man mount.cifs)"
+# Activez SMB 2.0 minimum dans DSM > Service de fichiers > SMB/AFP/NFS > Parametres Avances
+# 	Protocole maximum = 3.0
+# 	Protocole minimum = 2.0
+
 ### VARIABLES ###
 PARTAGE="//synology/partage/dossier"
 PARTAGEMNT="/mnt/cifs/synology"
@@ -72,7 +77,7 @@ else
 	# creation point montage si non present
 	[ -d $PARTAGEMNT ] || mkdir -p $PARTAGEMNT
 	# montage du partage syno
-	mount.cifs $PARTAGE $PARTAGEMNT -o user=${USERNAME},pass="${PASSWORD}" && shw_OK
+	mount.cifs $PARTAGE $PARTAGEMNT -o user=${USERNAME},pass="${PASSWORD},vers=2.0" && shw_OK
 	if [[ $? -ne 0 ]]; then
 		shw_err "\n\t ERREUR: montage impossible de $PARTAGE -- Arrêt du script \n"
 		exit 1
