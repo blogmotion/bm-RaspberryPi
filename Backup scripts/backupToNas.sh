@@ -10,7 +10,7 @@ VERSION="2017.09.04"
 ###########################################
 
 # Si erreur "mount error(95): Operation not supported Refer to the mount.cifs(8) manual page (e.g. man mount.cifs)"
-# Activez SMB 2.0 minimum dans DSM > Service de fichiers > SMB/AFP/NFS > Parametres Avances
+# Activez SMB 2.0 minimum dans DSM > Pann. de conf. > Service de fichiers > SMB/AFP/NFS > Parametres Avances
 # 	Protocole maximum = 3.0
 # 	Protocole minimum = 2.0
 
