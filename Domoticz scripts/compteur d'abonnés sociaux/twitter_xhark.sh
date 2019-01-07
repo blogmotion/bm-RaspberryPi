@@ -16,6 +16,10 @@ TWITTERNAME="xhark"
 URL="https://cdn.syndication.twimg.com/widgets/followbutton/info.json?screen_names=${TWITTERNAME}"
 ABO=$(curl -G -s $URL | jq -r '.[].followers_count')
 
+# ===  METHODE ALTERNATIVE DANS LE CODE SOURCE (MOINS FIABLE) =====================================
+#URL="https://twitter.com/${TWITTERNAME}"
+#ABO=$(curl -G -s -L --connect-timeout 5 $URL | grep -Po 'followers_count&quot;:\K[[:digit:]]*')
+
 # === INJECTION DANS LE CAPTEUR VIRTUEL ===========================================================
 URL="http://localhost:8080/json.htm?type=command&param=udevice&idx=${IDX}&nvalue=0&svalue=${ABO}"
 RETOUR=$(curl -s $URL | grep -i status)
