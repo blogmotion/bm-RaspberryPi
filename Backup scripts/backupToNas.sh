@@ -4,7 +4,7 @@
 ###########################################
 # auteur : Mr Xhark (blogmotion.fr)
 # source : http://blogmotion.fr/systeme/script-backup-rpi-partage-15977
-VERSION="2017.09.04"
+VERSION="2019.05.22"
 # licence type	: Creative Commons Attribution-NoDerivatives 4.0 (International)
 # licence info	: http://creativecommons.org/licenses/by-nd/4.0/
 ###########################################
@@ -25,6 +25,7 @@ PASSWORD="motdepasse"
 # __________________ NE RIEN MODIFIER SOUS CETTE LIGNE __________________ #
 
 DATE=$(date +%Y-%m-%d_%Hh%M)
+YYYY=$(date +%Y)
 TAR=$(hostname -s)"-${DATE}.tar.gz"
 
 ipserver=`ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/'`
@@ -86,6 +87,11 @@ fi
 
 # Sauvegarde listing cron
 for user in $(cut -f1 -d: /etc/passwd); do echo -e "\n\n==> $user:" ; crontab -u $user -l ;  done > /tmp/crontab 2>&1
+
+# Creation du repertoire de destination s'il n'existe pas
+if [[ ! -d "${PARTAGEMNT}/${YYYY}" ]]; then
+	mkdir -p "${PARTAGEMNT}/${YYYY}" || (shw_err "\n\t ERREUR: mkdir YYYY impossible"; exit 1)
+fi
 
 cd $PARTAGEMNT || (shw_err "\n\t ERREUR: cd impossible"; exit 1)
 
