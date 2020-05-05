@@ -1,5 +1,5 @@
 #!/bin/bash
-# twitter_xhark.sh : récupère les followers et les injecte dans un capteur virtuel
+# twitter.sh : récupère les followers et les injecte dans un capteur virtuel
 #
 # Author: Mr Xhark -> @xhark
 # License : Creative Commons http://creativecommons.org/licenses/by-nd/4.0/deed.fr
@@ -13,8 +13,8 @@ IDX=1124
 TWITTERNAME="xhark"
 
 # === LECTURE DU NOMBRE DE FOLLOWERS ==============================================================
-URL="https://cdn.syndication.twimg.com/widgets/followbutton/info.json?screen_names=${TWITTERNAME}"
-ABO=$(curl -G -s $URL | jq -r '.[].followers_count')
+URLTW="https://cdn.syndication.twimg.com/widgets/followbutton/info.json?screen_names=${TWITTERNAME}"
+ABO=$(curl -G -s $URLTW | jq -r '.[].followers_count')
 
 # ===  METHODE ALTERNATIVE DANS LE CODE SOURCE (MOINS FIABLE) =====================================
 #URL="https://twitter.com/${TWITTERNAME}"
