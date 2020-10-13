@@ -6,7 +6,7 @@
 VERSION="2019.06.22"
 
 # Villes compatibles: https://www.meteo-villes.com
-URLWIDGET="http://data.meteo-villes.com/previsions.php?ville=grenoble"
+URLWIDGET=""http://data.meteo-villes.com/previsions12j6.php?ville=grenoble"
 
 # Lecture et extraction (-N pour ignorer le retour "(23) Failed writing body")
 RISQUEPLUIE=$( curl -N -s --connect-timeout 5 $URLWIDGET | grep -Po '<risquePluie>\K[[:digit:]]*' --max-count=1 )
