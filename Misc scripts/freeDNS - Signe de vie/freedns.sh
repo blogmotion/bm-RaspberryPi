@@ -36,7 +36,7 @@ TXTID_FILE="`mktemp /tmp/freedns_txtid.XXXXXXXX`"
 
 REGEX_DOMAINID="s/.*data_id=\\([0-9]*\\)>${DOMAIN}.*/\\1/;t;d"
 
-echo "==============================================="
+shw_info "\n======= FreeDNS Signe de Vie v${VERSION} ========================================"
 echo -n "Connexion au site freedns..."
 
 curl -s "https://freedns.afraid.org/zc.php?step=2 " \
