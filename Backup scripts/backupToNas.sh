@@ -98,7 +98,7 @@ gris() 	    { echo -en "${bold}${gris}${@}${reset}";			}
 header()    { echo -e "${bold}${jaune}$*${reset}";				}
 headerU()   { echo -e "${underline}${bold}${jaune}$*${reset}";  }
 
-# Compare:  $1>= $2 alors Retourne 0, sinon retourne 1 -- https://stackoverflow.com/a/4024263/6357587
+# Compare:  $1>= $2 alors Retourne 0, sinon retourne 1 -- https://stackoverflow.com/a/4024263/6357587 (ou alternative avec vk3: https://stackoverflow.com/a/48998537/6357587)
 verMinimale() { 
 	[ "$1" = "$2" ] && return 0 || [ "$1" = "$(echo -e "$1\n$2" | sort -rV | head -n1 | grep $1)"
 }
