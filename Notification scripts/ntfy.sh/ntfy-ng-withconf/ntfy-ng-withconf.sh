@@ -44,13 +44,13 @@ Options :
   -h --help    	      prints this help and exit
 
 E.g:
-ntfy-ng-withconf.sh \"Hello World\"
-ntfy-ng-withconf.sh --message \"Hello World\"
-ntfy-ng-withconf.sh --topic \"nom_du_topic\" --message \"Hello World\"
-ntfy-ng-withconf.sh --topic \"nom_du_topic\" --message \"Hello World\"  --tags chart_with_downwards_trend,money_mouth_face --prio 5
+ntfy-ng-withconf.sh \"Voici un message\"
+ntfy-ng-withconf.sh --message \"Voici un message\"
+ntfy-ng-withconf.sh --topic \"nom_du_topic\" --message \"Voici un message\"
+ntfy-ng-withconf.sh --topic \"nom_du_topic\" --message \"Voici un message\"  --tags chart_with_downwards_trend,money_mouth_face --prio 5
 
 With specific config file:
-ntfy-ng-withconf.sh --config \"custom.cfg\" --topic \"nom_du_topic\" --message \"Hello World\"  --tags chart_with_downwards_trend,money_mouth_face --prio 5
+ntfy-ng-withconf.sh --config \"custom.cfg\" --topic \"nom_du_topic\" --message \"Voici un message\"  --tags chart_with_downwards_trend,money_mouth_face --prio 5
 "
   exit 3
 }

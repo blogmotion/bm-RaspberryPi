@@ -51,8 +51,8 @@ Options :
 e.g:
 ntfy-ng.sh \"Voici un message\"
 ntfy-ng.sh --message \"Voici un message\"
-ntfy-ng.sh --topic \"topic_name\" --message \"hello world\"
-ntfy-ng.sh --topic \"topic_name\" --message \"hello world\"  --tags chart_with_downwards_trend,money_mouth_face --prio 5
+ntfy-ng.sh --topic \"topic_name\" --message \"Voici un message\"
+ntfy-ng.sh --topic \"topic_name\" --message \"Voici un message\"  --tags chart_with_downwards_trend,money_mouth_face --prio 5
 "
   exit 3
 }
