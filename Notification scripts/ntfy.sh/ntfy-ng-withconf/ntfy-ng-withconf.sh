@@ -7,8 +7,8 @@
 ###################################################################
 # author : Mr Xhark - twitter.com/xhark
 # source : https://blogmotion.fr/
-# licence : Creative Commons Attribution-NoDerivatives 4.0 (International)
-#         : https://creativecommons.org/licenses/by-nd/4.0/
+# licence : Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
+#         : https://creativecommons.org/licenses/by-nc-sa/4.0/
 ###################################################################
 
 VERSION="2023.02.21"
