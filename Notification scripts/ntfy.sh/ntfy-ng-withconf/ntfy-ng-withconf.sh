@@ -6,7 +6,7 @@
 # If no arguments : send to the default topic
 ###################################################################
 # author : Mr Xhark - twitter.com/xhark
-# source : https://blogmotion.fr/
+# source : https://blogmotion.fr/diy/ntfy-notification-push-domotique-20708
 # licence : Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
 #         : https://creativecommons.org/licenses/by-nc-sa/4.0/
 ###################################################################
