@@ -1,0 +1,139 @@
+#!/bin/bash
+# immosquare.sh
+#
+# Envoie une notification (via ntfy)
+# attente de reglement chez Regie Des Eaux
+#
+# author : Mr Xhark - twitter.com/xhark
+# source : https://blogmotion.fr
+# licence : Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
+#         : https://creativecommons.org/licenses/by-nc-sa/4.0/
+VERSION="2023.12.13"
+########################################################################
+
+# Identifiants client
+LOGIN="mon@email.fr"
+PASSW="xxxxxxxxxxxxxxxx"
+NCONTRAT="1234567"
+
+# Script et topic ntfy
+# +d'info https://github.com/blogmotion/bm-RaspberryPi/blob/master/Notification%20scripts/ntfy.sh/ntfy-ng/ntfy-ng.sh
+NTFYSCRIPT="/home/pi/ntfy/ntfy-ng.sh"
+NTFYTOPIC="topic-ntfy-au-choix"
+
+
+########################### DEBUT DU SCRIPT ############################
+
+COOKIE_HOME=$(mktemp "/tmp/regiedeseaux_cookieHome.XXXXXXXX")
+COOKIE_BIGIP=$(mktemp "/tmp/regiedeseaux_cookieBigIP.XXXXXXXX")
+
+# https://stackoverflow.com/a/51487158
+HEADERS_DEB=(
+	-H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0'
+	-H 'Accept: application/json, text/plain, */*'
+	-H 'Accept-Language: fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3'
+	-H 'Accept-Encoding: gzip, deflate, br'
+)
+
+HEADERS_FIN=(
+        -H 'Content-Type: application/json;charset=utf-8'
+        -H 'Origin: https://eau.grenoblealpesmetropole.fr'
+        -H 'Connection: keep-alive'
+        -H 'Referer: https://eau.grenoblealpesmetropole.fr/index.html'
+        -H 'Sec-Fetch-Dest: empty'
+        -H 'Sec-Fetch-Mode: cors'
+        -H 'Sec-Fetch-Site: same-origin'
+        -H 'Sec-GPC: 1'
+        -H 'Pragma: no-cache'
+        -H 'Cache-Control: no-cache'
+)
+
+
+echo "___ Debut du script v${VERSION} ___" && echo
+
+# Generation conversationId random par bash
+conversationId="JS-WEB-Netscape-$(cat /proc/sys/kernel/random/uuid)"
+echo " > conversationId=${conversationId}" && echo
+
+dataraw='{
+    "ConversationId": "'${conversationId}'",
+    "ClientId": "AEL-TOKEN-GAM-PRD",
+    "AccessKey": "Bh!66-GAM-GRE-MP1-PRD"
+}'
+
+datarawform='{"identifiant": "'${LOGIN}'","motDePasse": "'${PASSW}'"}'
+
+
+#----------------------------------------------------------------------------------------------------------------------------
+echo "=== [CURL_O] Lecture cookie BigIP ==="
+HEADER_CURL_0='/tmp/regiedeseaux_header_0.txt'
+
+curl --silent -L 'https://eau.grenoblealpesmetropole.fr/index.html#/login' \
+     --dump-header $HEADER_CURL_0 \
+     --output /dev/null
+
+COOKIE_BIGIP=$(awk -F 'Set-Cookie: BIGipServerfrt-ael-gam_pool=|; ' '/Set-Cookie: BIGipServerfrt-ael-gam_pool=/{print $2}' $HEADER_CURL_0)
+
+echo " > Cookie BigIP=${COOKIE_BIGIP}" && echo
+
+
+#----------------------------------------------------------------------------------------------------------------------------
+echo "=== [CURL_1] Recup openToken et MessageId (/generateToken) ==="
+jsonToken=$(curl --silent -L 'https://eau.grenoblealpesmetropole.fr/webapi/Acces/generateToken' -X POST\
+        --dump-header '/tmp/regiedeseaux_header_1.txt' \
+	"${HEADERS_DEB[@]}" \
+        -H 'Cookie: BIGipServerfrt-ael-gam_pool='${COOKIE_BIGIP}\
+        -H 'ConversationId: '$conversationId\
+        -H 'Token: Bh!66-GAM-GRE-MP1-PRD' \
+        "${HEADERS_FIN[@]}" \
+       --data-raw  "$dataraw"
+)
+
+openToken=$(echo "$jsonToken" | jq -r '.token')
+msgId=$(grep -oP "MessageId: \K\S+" '/tmp/regiedeseaux_header_1.txt')
+
+echo " > OpenToken=${openToken}"
+echo " > MessageId=${msgId}" && echo
+
+
+#----------------------------------------------------------------------------------------------------------------------------
+echo "=== [CURL_3] Envoi du formulaire de connexion (/authentification) ==="
+ret3=$(curl --silent -L 'https://eau.grenoblealpesmetropole.fr/webapi/Utilisateur/authentification' -X POST \
+         --dump-header '/tmp/regiedeseaux_header_3.txt' \
+         "${HEADERS_DEB[@]}" \
+ 	 -H 'Token: '${openToken}\
+ 	 -H 'ConversationId: '${conversationId}\
+         -H 'Cookie: BIGipServerfrt-ael-gam_pool='${COOKIE_BIGIP}\
+         "${HEADERS_FIN[@]}" \
+ 	 --data-raw "$datarawform"\
+)
+
+tokenAuthentique=$(echo "$ret3" | jq -r '.tokenAuthentique')
+
+echo " > tokenAuthentique=${tokenAuthentique}" && echo
+
+
+#----------------------------------------------------------------------------------------------------------------------------
+echo "=== [CURL_4] Lecture solde euros (/Facturation) ==="
+retSolde=$(curl --silent -L "https://eau.grenoblealpesmetropole.fr/webapi/Facturation/soldeComptableContratAbonnement/${NCONTRAT}"  \
+         "${HEADERS_DEB[@]}" \
+         -H 'Token: '${tokenAuthentique}\
+         -H 'ConversationId: '${conversationId}\
+         -H 'Cookie:  BIGipServerfrt-ael-gam_pool='${COOKIE_BIGIP}'; aelToken='${openToken}\
+         "${HEADERS_FIN[@]}"\
+)
+
+soldeEuros=$(echo "$retSolde" | jq -r . )
+
+if [[ $soldeEuros -eq "0,0" ]]; then
+   echo "OK (Rien a payer: $soldeEuros eur)"
+else
+    SOLDEMSG="[Facture d'Eau] ${soldeEuros}€ A REGLER"
+    echo $SOLDEMSG
+    $NTFYSCRIPT --topic $NTFYTOPIC --message "$SOLDEMSG"  --tags droplet,moneybag --priority 3
+
+   echo "Solde a payer : $soldeEuros euros"
+fi
+
+trap 'rm -f $COOKIE_HOME $COOKIE_BIGIP' EXIT
+echo && exit 0
