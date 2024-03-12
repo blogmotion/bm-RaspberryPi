@@ -1,5 +1,5 @@
 #!/bin/bash
-# immosquare.sh
+# regiesDesEauxGrenoble.sh
 #
 # Envoie une notification (via ntfy)
 # attente de reglement chez Regie Des Eaux
