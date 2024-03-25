@@ -41,6 +41,10 @@ fi
 
 COOKIE_HOME=$(mktemp "/tmp/regiedeseaux_cookieHome.XXXXXXXX")
 COOKIE_BIGIP=$(mktemp "/tmp/regiedeseaux_cookieBigIP.XXXXXXXX")
+CURLHEADER0=$(mktemp "/tmp/regiedeseaux_cUrlHeader0.XXXXXXXX")
+CURLHEADER1=$(mktemp "/tmp/regiedeseaux_cUrlHeader1.XXXXXXXX")
+CURLHEADER2=$(mktemp "/tmp/regiedeseaux_cUrlHeader2.XXXXXXXX")
+
 
 # https://stackoverflow.com/a/51487158
 HEADERS_DEB=(
@@ -80,11 +84,11 @@ datarawform='{"identifiant": "'${LOGIN}'","motDePasse": "'${PASSW}'"}'
 
 
 #----------------------------------------------------------------------------------------------------------------------------
-echo "=== [CURL_O] Lecture cookie BigIP ==="
-HEADER_CURL_0='/tmp/regiedeseaux_header_0.txt'
+echo "=== [CURL_0] Lecture cookie BigIP ==="
+HEADER_CURL_0="${CURLHEADER0}"
 
 curl --silent -L 'https://eau.grenoblealpesmetropole.fr/index.html#/login' \
-     --dump-header $HEADER_CURL_0 \
+     --dump-header "${HEADER_CURL_0}" \
      --output /dev/null
 
 COOKIE_BIGIP=$(awk -F 'Set-Cookie: BIGipServerfrt-ael-gam_pool=|; ' '/Set-Cookie: BIGipServerfrt-ael-gam_pool=/{print $2}' $HEADER_CURL_0)
@@ -94,33 +98,33 @@ echo " > Cookie BigIP=${COOKIE_BIGIP}" && echo
 
 #----------------------------------------------------------------------------------------------------------------------------
 echo "=== [CURL_1] Recup openToken et MessageId (/generateToken) ==="
-jsonToken=$(curl --silent -L 'https://eau.grenoblealpesmetropole.fr/webapi/Acces/generateToken' -X POST\
-        --dump-header '/tmp/regiedeseaux_header_1.txt' \
+jsonToken=$(curl --silent -L 'https://eau.grenoblealpesmetropole.fr/webapi/Acces/generateToken' -X POST \
+    --dump-header "${CURLHEADER1}" \
 	"${HEADERS_DEB[@]}" \
-        -H 'Cookie: BIGipServerfrt-ael-gam_pool='${COOKIE_BIGIP}\
-        -H 'ConversationId: '$conversationId\
-        -H 'Token: Bh!66-GAM-GRE-MP1-PRD' \
-        "${HEADERS_FIN[@]}" \
-       --data-raw  "$dataraw"
+    -H 'Cookie: BIGipServerfrt-ael-gam_pool='${COOKIE_BIGIP} \
+    -H 'ConversationId: '$conversationId \
+    -H 'Token: Bh!66-GAM-GRE-MP1-PRD' \
+    "${HEADERS_FIN[@]}" \
+     --data-raw  "$dataraw"
 )
 
 openToken=$(echo "$jsonToken" | jq -r '.token')
-msgId=$(grep -oP "MessageId: \K\S+" '/tmp/regiedeseaux_header_1.txt')
+msgId=$(grep -oP "MessageId: \K\S+" "${CURLHEADER1}")
 
 echo " > OpenToken=${openToken}"
 echo " > MessageId=${msgId}" && echo
 
 
 #----------------------------------------------------------------------------------------------------------------------------
-echo "=== [CURL_3] Envoi du formulaire de connexion (/authentification) ==="
+echo "=== [CURL_2] Envoi du formulaire de connexion (/authentification) ==="
 ret3=$(curl --silent -L 'https://eau.grenoblealpesmetropole.fr/webapi/Utilisateur/authentification' -X POST \
-         --dump-header '/tmp/regiedeseaux_header_3.txt' \
-         "${HEADERS_DEB[@]}" \
- 	 -H 'Token: '${openToken}\
- 	 -H 'ConversationId: '${conversationId}\
-         -H 'Cookie: BIGipServerfrt-ael-gam_pool='${COOKIE_BIGIP}\
-         "${HEADERS_FIN[@]}" \
- 	 --data-raw "$datarawform"\
+    --dump-header "${CURLHEADER2}" \
+	"${HEADERS_DEB[@]}" \
+    -H 'Token: '${openToken} \
+    -H 'ConversationId: '${conversationId} \
+    -H 'Cookie: BIGipServerfrt-ael-gam_pool='${COOKIE_BIGIP} \
+    "${HEADERS_FIN[@]}" \
+     --data-raw "$datarawform" \
 )
 
 tokenAuthentique=$(echo "$ret3" | jq -r '.tokenAuthentique')
@@ -129,13 +133,13 @@ echo " > tokenAuthentique=${tokenAuthentique}" && echo
 
 
 #----------------------------------------------------------------------------------------------------------------------------
-echo "=== [CURL_4] Lecture solde euros (/Facturation) ==="
+echo "=== [CURL_3] Lecture solde euros (/Facturation) ==="
 retSolde=$(curl --silent -L "https://eau.grenoblealpesmetropole.fr/webapi/Facturation/soldeComptableContratAbonnement/${NUMCONTRAT}"  \
-         "${HEADERS_DEB[@]}" \
-         -H 'Token: '${tokenAuthentique}\
-         -H 'ConversationId: '${conversationId}\
-         -H 'Cookie:  BIGipServerfrt-ael-gam_pool='${COOKIE_BIGIP}'; aelToken='${openToken}\
-         "${HEADERS_FIN[@]}"\
+	"${HEADERS_DEB[@]}" \
+	-H 'Token: '${tokenAuthentique} \
+	-H 'ConversationId: '${conversationId} \
+	-H 'Cookie:  BIGipServerfrt-ael-gam_pool='${COOKIE_BIGIP}'; aelToken='${openToken} \
+	"${HEADERS_FIN[@]}" \
 )
 
 soldeEuros=$(echo "$retSolde" | jq -r . )
@@ -149,6 +153,7 @@ else
 
    echo "Solde a payer : $soldeEuros euros"
 fi
+
 
 trap 'rm -f $COOKIE_HOME $COOKIE_BIGIP' EXIT
 echo && exit 0
