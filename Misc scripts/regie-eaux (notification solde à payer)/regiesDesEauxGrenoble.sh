@@ -1,28 +1,43 @@
 #!/bin/bash
 # regiesDesEauxGrenoble.sh
 #
-# Envoie une notification (via ntfy)
-# attente de reglement chez Regie Des Eaux
+# Envoie une notification (via ntfy) quand
+# facture de "Regie Des Eaux" (Metropole Grenobloise) à payer
 #
-# author : Mr Xhark - twitter.com/xhark
-# source : https://blogmotion.fr
+# author : Mr Xhark, @xhark
+# tutoriel : https://blogmotion.fr/programmation/bash/script-notification-facture-de-regie-des-eaux-grenoble
+
 # licence : Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
 #         : https://creativecommons.org/licenses/by-nc-sa/4.0/
-VERSION="2023.12.13"
-########################################################################
+VERSION="2024.03.25"
+
+# Script compatible uniquement avec les communes en gestion par la Metro
+# Votre communique doit etre dans cette liste :
+# curl -s https://ael.eauxdegrenoblealpes.fr/local/communes.json | jq -r '.items[] | select(.nomSociete == "METROPOLE") | .nomCommune' || echo "JQ est manquant, installez-le"
+
+
+############################## VARIABLES ###############################
 
 # Identifiants client
 LOGIN="mon@email.fr"
 PASSW="xxxxxxxxxxxxxxxx"
-NCONTRAT="1234567"
 
-# Script et topic ntfy
-# +d'info https://github.com/blogmotion/bm-RaspberryPi/blob/master/Notification%20scripts/ntfy.sh/ntfy-ng/ntfy-ng.sh
+# Numero de contrat (voir facture / espace client en ligne)
+NUMCONTRAT="1234567"
+
+# Script et topic ntfy (voir https://github.com/blogmotion/bm-RaspberryPi/blob/master/Notification%20scripts/ntfy.sh/ntfy-ng/ntfy-ng.sh)
 NTFYSCRIPT="/home/pi/ntfy/ntfy-ng.sh"
 NTFYTOPIC="topic-ntfy-au-choix"
 
 
 ########################### DEBUT DU SCRIPT ############################
+
+if ! command -v jq &> /dev/null; then
+    echo "Erreur : jq n'est pas installé. Veuillez l'installer pour exécuter ce script."
+    echo "Debian based : apt install jq -y"
+    echo "RedHat based : dnf install jq -y"
+    exit 1
+fi
 
 COOKIE_HOME=$(mktemp "/tmp/regiedeseaux_cookieHome.XXXXXXXX")
 COOKIE_BIGIP=$(mktemp "/tmp/regiedeseaux_cookieBigIP.XXXXXXXX")
@@ -49,7 +64,7 @@ HEADERS_FIN=(
 )
 
 
-echo "___ Debut du script v${VERSION} ___" && echo
+echo "___ Debut du script v${VERSION} par @xhark ___" && echo
 
 # Generation conversationId random par bash
 conversationId="JS-WEB-Netscape-$(cat /proc/sys/kernel/random/uuid)"
@@ -115,7 +130,7 @@ echo " > tokenAuthentique=${tokenAuthentique}" && echo
 
 #----------------------------------------------------------------------------------------------------------------------------
 echo "=== [CURL_4] Lecture solde euros (/Facturation) ==="
-retSolde=$(curl --silent -L "https://eau.grenoblealpesmetropole.fr/webapi/Facturation/soldeComptableContratAbonnement/${NCONTRAT}"  \
+retSolde=$(curl --silent -L "https://eau.grenoblealpesmetropole.fr/webapi/Facturation/soldeComptableContratAbonnement/${NUMCONTRAT}"  \
          "${HEADERS_DEB[@]}" \
          -H 'Token: '${tokenAuthentique}\
          -H 'ConversationId: '${conversationId}\
