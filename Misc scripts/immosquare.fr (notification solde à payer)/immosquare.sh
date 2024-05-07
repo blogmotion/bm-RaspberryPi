@@ -27,14 +27,14 @@ NTFYTOPIC="le-nom-de-votre-topic-ntfy"
 
 ########################### DEBUT DU SCRIPT ############################
 
-# Récupereration du cookie PHPSESSID
+# Récupéreration du cookie PHPSESSID
 login_response=$(curl --silent -c $COOKIE $MIRE)
 
 # Extraction PHPSESSID du fichier de cookies
 PHPID=$(grep -oP "(?<=PHPSESSID\t)[^;]+" ${COOKIE})
 
 curl --silent "https://extranet2.ics.fr/login_externe.php" -X POST \
-	-H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:110.0) Gecko/20100101 Firefox/112.0" \
+	-H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0" \
 	-H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8" \
 	-H "Accept-Language: fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3" -H "Accept-Encoding: gzip, deflate, br"\
 	-H "Content-Type: application/x-www-form-urlencoded" -H "Origin: https://extranet2.ics.fr"\
@@ -46,7 +46,7 @@ curl --silent "https://extranet2.ics.fr/login_externe.php" -X POST \
 	--data-raw "login=${IMMOLOGIN}&mdp=${IMMOPASSW}&groupe=immosquare"
 	
 curl --silent "https://extranet2.ics.fr/V5/initialisation.html" \
-	-H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0" \
+	-H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0" \
 	-H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8" \
 	-H "Accept-Language: fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3" -H "Accept-Encoding: gzip, deflate, br"\
 	-H "Referer: https://extranet2.ics.fr/V5/connexion-immosquare.html" -H "DNT: 1" -H "Connection: keep-alive"\
