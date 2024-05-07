@@ -21,7 +21,7 @@ COOKIE="/tmp/immosquare_cookies.txt"
 COOKIEREPONSE="/tmp/immosquare_reponse.txt"
 
 # https://github.com/blogmotion/bm-RaspberryPi/blob/master/Notification%20scripts/ntfy.sh/ntfy-ng/ntfy-ng.sh
-NTFYSCRIPT="/home/pi/scripts/ntfy/ntfy-ng.sh"
+NTFYSCRIPT="/home/pi/ntfy/ntfy-ng.sh"
 NTFYTOPIC="le-nom-de-votre-topic-ntfy"
 
 
