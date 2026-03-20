@@ -39,7 +39,7 @@ REGEX_DOMAINID="s/.*data_id=\\([0-9]*\\)>${DOMAIN}.*/\\1/;t;d"
 shw_info "\n======= FreeDNS Signe de Vie v${VERSION} ========================================"
 echo -n "Connexion au site freedns..."
 
-curl -s "https://freedns.afraid.org/zc.php?step=2 " \
+curl -s "https://freedns.afraid.org/zc.php?step=2" \
      -c ${COOKIE_FILE}                              \
      -d "action=auth"                               \
      -d "submit=Login"                              \
