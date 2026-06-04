@@ -42,6 +42,6 @@ if [[ "${INDICE}" -ge "4" ]]; then
         QUALITE2AIR=$(echo $QUALITE2AIR | awk '{print(toupper($0))}')
 fi
 
-echo  "Air ${QUALITE2AIR} (${INDICEAIR}/6). Major: ${POLMAJO_NOM} (${POLMAJO_INDICE}/6)"
+echo  "Air ${QUALITE2AIR} (${INDICEAIR}/6). Major: ${POLMAJO_NOM} (${POLMAJO_INDICE}/6 via API)"
 
 exit 0
